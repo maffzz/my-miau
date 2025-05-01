@@ -18,6 +18,6 @@ public class Gatito {
     @Enumerated(EnumType.STRING)
     private GatitoColor color;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "duenio", nullable = false)
     private Usuario duenio;}

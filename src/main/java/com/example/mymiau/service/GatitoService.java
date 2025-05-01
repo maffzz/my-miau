@@ -12,10 +12,10 @@ import com.example.mymiau.mapper.GatitoMapper;
 import com.example.mymiau.repository.GatitoRepository;
 import com.example.mymiau.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,38 +23,36 @@ public class GatitoService {
     private final GatitoRepository gatitoRepository;
     private final UsuarioRepository usuarioRepository;
 
-    List<Gatito> getGatitos() {
-        return gatitoRepository.findAll();}
+    public List<ResponseGatito> getGatitos() {
+        List<Gatito> gatitos = gatitoRepository.findAll();
+        return gatitos.stream()
+                .map(GatitoMapper::toDTO)
+                .toList();}
 
-    public ResponseGatito createGatito(CreateGatito dto) {
-        if (!usuarioRepository.existsById(dto.getDuenio_id())) {
-            throw new NotFound(" ¡! no existe el dueño con el id " + dto.getDuenio_id());}
-        Gatito gatitoNuevo = new Gatito();
-        gatitoNuevo.setNombre(dto.getNombre());
-        gatitoNuevo.setAnioNacimiento(dto.getAnioNacimiento());
-        gatitoNuevo.setColor(dto.getColor());
-        gatitoRepository.save(gatitoNuevo);
-        System.out.println("gatito creado correctamente :D");
-        return GatitoMapper.toDTO(gatitoNuevo);}
+    public ResponseGatito createGatito(@NotNull CreateGatito dto) {
+        Usuario duenio = usuarioRepository.findById(dto.getDuenio())
+                .orElseThrow(() -> new NotFound( "¡! no existe el dueño con id " + dto.getDuenio()));
+        Gatito gatito = new Gatito();
+        gatito.setNombre(dto.getNombre());
+        gatito.setAnioNacimiento(dto.getAnioNacimiento());
+        gatito.setColor(dto.getColor());
+        gatito.setDuenio(duenio);
+        Gatito nuevoGatito = gatitoRepository.save(gatito);
+        return GatitoMapper.toDTO(nuevoGatito);}
 
-    public ResponseGatito UpdateGatitoNombre(Long id, UpdateGatitoNombre dto) {
+    public ResponseGatito updateGatitoNombre(Long id, @NotNull UpdateGatitoNombre dto) {
         Gatito gatitoActu = gatitoRepository.findById(id).orElseThrow(
                 () -> new NotFound(" ¡! no existe el gatito con el id " + id));
         gatitoActu.setNombre(dto.getNombre());
-        System.out.println("gatito actualizado correctamente :D");
+        gatitoRepository.save(gatitoActu);
         return GatitoMapper.toDTO(gatitoActu);}
 
-    public ResponseGatito UpdateGatitoDuenio(Long id, UpdateGatitoDuenio dto) {
-        // maybe me hice bolas
+    public ResponseGatito updateGatitoDuenio(Long id, @NotNull UpdateGatitoDuenio dto) {
         Gatito gatitoActu = gatitoRepository.findById(id).orElseThrow(
                 () -> new NotFound(" ¡! no existe el gatito con el id " + id));
-         Optional<Usuario> noDuenio = usuarioRepository.findById(gatitoActu.getDuenio().getId());
-        gatitoActu.setDuenio(usuarioRepository.findById(dto.getNewDuenio_id()).orElseThrow(
-                () -> new NotFound(" ¡! no existe el dueño con el id " + dto.getNewDuenio_id())));
-         noDuenio.get().getGatitos().remove(gatitoActu);
-         Optional<Usuario> nuevoDuenio = usuarioRepository.findById(dto.getNewDuenio_id());
-         nuevoDuenio.get().getGatitos().add(gatitoActu);
-        System.out.println("gatito actualizado correctamente :D");
+        gatitoActu.setDuenio(usuarioRepository.findById(dto.getDuenio()).orElseThrow(
+                () -> new NotFound(" ¡! no existe el dueño con el id " + dto.getDuenio())));
+        gatitoRepository.save(gatitoActu);
         return GatitoMapper.toDTO(gatitoActu);}
 
     public String deleteGatito(Long id) {
@@ -72,9 +70,7 @@ public class GatitoService {
         if (gatitos.isEmpty()) {
             throw new NotFound(
                     " ¡! no hay gatitos con este nombre");}
-        return gatitos.stream()
-                .map(GatitoMapper::toDTO)
-                .toList();}
+        return gatitos.stream().map(GatitoMapper::toDTO).toList();}
 
     public List<ResponseGatito> getGatitoByAnioNacimiento(Integer anio) {
         List<Gatito> gatitos = gatitoRepository.findByAnioNacimiento(anio);
@@ -85,7 +81,7 @@ public class GatitoService {
                 .map(GatitoMapper::toDTO)
                 .toList();}
 
-    public List<ResponseGatito> getGatitoColor(GatitoColor color) {
+    public List<ResponseGatito> getGatitoByColor(GatitoColor color) {
         List<Gatito> gatitos = gatitoRepository.findByColor(color);
         if (gatitos.isEmpty()) {
             throw new NotFound(

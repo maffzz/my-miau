@@ -23,12 +23,13 @@ import java.util.stream.Collectors;
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
 
-    public List<Usuario> getUsuarios() {
-        return usuarioRepository.findAll();}
+    public List<ResponseUsuario> getUsuarios() {
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        return usuarios.stream().map(UsuarioMapper::toDTO).collect(Collectors.toList());}
 
     public ResponseUsuario createUsuario(CreateUsuario dto) {
         if (usuarioRepository.existsByCorreo(dto.getCorreo())) {
-            throw new Conflict("ya existe un usuario con ese correo");}
+            throw new Conflict(" ¡! ya existe un usuario con ese correo");}
         Usuario usuarioNuevo = new Usuario();
         usuarioNuevo.setNombre(dto.getNombre());
         usuarioNuevo.setCorreo(dto.getCorreo());
@@ -36,7 +37,6 @@ public class UsuarioService {
         usuarioNuevo.setContrasenia(dto.getContrasenia());
         usuarioNuevo.setFechaRegistro(LocalDate.now());
         usuarioRepository.save(usuarioNuevo);
-        System.out.println("usuario creado correctamente :D");
         return UsuarioMapper.toDTO(usuarioNuevo);}
     
     public ResponseUsuario updateNombreUsuario(Long id, UpdateUsuarioNombre dto) {
@@ -44,7 +44,6 @@ public class UsuarioService {
             throw new NotFound(" ¡! no existe el usuario con el id " + id);}
         Usuario usuarioActu = usuarioRepository.findById(id).get();
         usuarioActu.setNombre(dto.getNombre());
-        System.out.println("usuario actualizado correctamente :D");
         return UsuarioMapper.toDTO(usuarioActu);}
     
     public String deleteUsuario(Long id) {

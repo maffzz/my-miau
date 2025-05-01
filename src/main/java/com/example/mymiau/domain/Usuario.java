@@ -4,11 +4,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Entity
-@Table(name = "usuario")
+@Table(name = "duenio")
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +24,4 @@ public class Usuario {
     private LocalDate fechaRegistro = LocalDate.now();
 
     @OneToMany(mappedBy = "duenio", cascade = CascadeType.ALL)
-    private List<Gatito> gatitos;}
+    private List<Gatito> gatitos = new ArrayList<>();}
