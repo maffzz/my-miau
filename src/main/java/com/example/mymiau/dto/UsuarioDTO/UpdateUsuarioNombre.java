@@ -1,9 +1,9 @@
 package com.example.mymiau.dto.UsuarioDTO;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class UpdateUsuarioNombre {
-    @NotNull(message = " ¡! el nombre del gatito no puede ser nulo")
+    @NotBlank(message = " ¡! el nombre del gatito no puede ser nulo")
     private String nombre;}

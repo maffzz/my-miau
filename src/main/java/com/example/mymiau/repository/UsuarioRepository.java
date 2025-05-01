@@ -9,5 +9,4 @@ import java.util.List;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     boolean existsByCorreo(String correo);
     List<Usuario> findByFechaRegistro(LocalDate fechaRegistro);
-    List<Usuario> findByNombre(String nombre);
-}
+    List<Usuario> findByNombre(String nombre);}

@@ -1,20 +1,24 @@
 package com.example.mymiau.dto.GatitoDTO;
 
-import jakarta.validation.constraints.NotNull;
+import com.example.mymiau.domain.GatitoColor;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
 public class CreateGatito {
-    @NotNull(message = " ¡! el nombre del gatito no puede ser nulo")
+    @NotBlank(message = " ¡! el nombre del gatito no puede ser nulo")
     private String nombre;
 
-    @NotNull(message = " ¡! el año de nacimiento del gatito no puede ser nulo")
+    @NotBlank(message = " ¡! el año de nacimiento del gatito no puede ser nulo")
     @Size(min = 4, max = 4, message = " ¡! el año de nacimiento del gatito debe tener formado 'YYYY'")
     private Integer anioNacimiento;
 
-    @NotNull(message = " ¡! el color del gatito no puede ser nulo")
-    private String color;
+    @NotBlank(message = " ¡! el color del gatito no puede ser nulo")
+    @Enumerated(EnumType.STRING)
+    private GatitoColor color;
 
-    @NotNull(message = " ¡! el id del dueño del gatito no puede ser nulo")
+    @NotBlank(message = " ¡! el id del dueño del gatito no puede ser nulo")
     private Long duenio_id;}
