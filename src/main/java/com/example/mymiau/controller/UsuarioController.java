@@ -26,7 +26,7 @@ public class UsuarioController {
         return ResponseEntity.status(201).body(usuarioService.createUsuario(dto));}
 
     @PatchMapping("/{id}/updatenom")
-    public ResponseEntity<ResponseUsuario> updateNombreUsuario(@Valid@PathVariable Long id, @Valid @RequestBody UpdateUsuarioNombre dto) {
+    public ResponseEntity<ResponseUsuario> updateNombreUsuario(@Valid @PathVariable Long id, @Valid @RequestBody UpdateUsuarioNombre dto) {
         return ResponseEntity.ok(usuarioService.updateNombreUsuario(id, dto));}
 
     @DeleteMapping("/{id}")
