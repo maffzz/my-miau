@@ -10,6 +10,7 @@ import com.example.mymiau.exception.NotFound;
 import com.example.mymiau.mapper.UsuarioMapper;
 import com.example.mymiau.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,19 +23,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<ResponseUsuario> getUsuarios() {
         List<Usuario> usuarios = usuarioRepository.findAll();
         return usuarios.stream().map(UsuarioMapper::toDTO).collect(Collectors.toList());}
 
     public ResponseUsuario createUsuario(CreateUsuario dto) {
-        if (usuarioRepository.existsByCorreo(dto.getCorreo())) {
+        if (usuarioRepository.existsByEmail(dto.getCorreo())) {
             throw new Conflict(" ¡! ya existe un usuario con ese correo");}
         Usuario usuarioNuevo = new Usuario();
         usuarioNuevo.setNombre(dto.getNombre());
-        usuarioNuevo.setCorreo(dto.getCorreo());
-        // meter spring security a la contraseña
-        usuarioNuevo.setContrasenia(dto.getContrasenia());
+        usuarioNuevo.setEmail(dto.getCorreo());
+        usuarioNuevo.setPassword(passwordEncoder.encode(dto.getContrasenia()));
         usuarioNuevo.setFechaRegistro(LocalDate.now());
         usuarioRepository.save(usuarioNuevo);
         return UsuarioMapper.toDTO(usuarioNuevo);}

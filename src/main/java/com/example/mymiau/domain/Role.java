@@ -1,9 +1,9 @@
 package com.example.mymiau.domain;
 
-public enum GatitoColor {blanco, negro, marron, gris, naranja, manchas;
+public enum Role {ADMIN, USER;
 
     public static boolean contiene(String valor) {
-        for (GatitoColor e : values()) {
+        for (Role e : values()) {
             if (e.name().equalsIgnoreCase(valor)) {
                 return true;}}
         return false;}}
