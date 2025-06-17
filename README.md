@@ -22,8 +22,8 @@ my-miau es una base de datos de gatos donde los usuarios pueden:
 
 ```
 src/main/java/com/example/mymiau/
-├── config/          # configuración de seguridad y cors 🔧
-├── controller/      # controladores rest 🎮
+├── config/         # configuración de seguridad y cors 🔧
+├── controller/     # controladores rest 🎮
 ├── domain/         # entidades del dominio 🏗️
 ├── dto/            # objetos de transferencia de datos 📦
 ├── exception/      # manejo de excepciones ⚠️
